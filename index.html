@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    font-family: Arial, sans-serif;
+  }
+  #container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  #todo {
+    flex: 1;
+    margin-right: 10px;
+  }
+  #copy {
+    flex: 0;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  li {
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+</style>
+<title>clipboard</title>
+</head>
+<body>
+  <h1>clipboard</h1>
+  <div id="container">
+    <div id="todo">
+      <input type="text" id="taskInput" placeholder="Enter a task">
+      <button onclick="addTask()">Add Task</button>
+    </div>
+    <div id="copy">
+      <button onclick="copyTasks()">Copy All Tasks</button>
+    </div>
+  </div>
+  <ul id="taskList"></ul>
+
+  <script>
+    function addTask() {
+      const taskInput = document.getElementById("taskInput");
+      const taskText = taskInput.value.trim();
+
+      if (taskText !== "") {
+        const taskList = document.getElementById("taskList");
+        const listItem = document.createElement("li");
+        listItem.innerHTML = `
+          <span>${taskText}</span>
+          <button onclick="copyTask('${taskText}')">Copy</button>
+        `;
+        taskList.appendChild(listItem);
+        taskInput.value = "";
+      }
+    }
+
+    function copyTask(text) {
+      const tempTextarea = document.createElement("textarea");
+      tempTextarea.value = text;
+      document.body.appendChild(tempTextarea);
+      tempTextarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(tempTextarea);
+      alert("Text copied: " + text);
+    }
+
+    function copyTasks() {
+      const taskList = document.getElementById("taskList");
+      const taskItems = taskList.querySelectorAll("li span");
+      const allTasksText = Array.from(taskItems).map(item => item.textContent).join("\n");
+      copyTask(allTasksText);
+    }
+  </script>
+</body>
+</html>
